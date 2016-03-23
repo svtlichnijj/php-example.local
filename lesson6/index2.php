@@ -25,11 +25,6 @@
     ?>
     <h2>Гарячі тури по 300 за день!!!</h2>
     <h3>Знижки 5% !!!</h3>
-    <?php print_r($arCountries);?>
-    <?php foreach ($arCountries as $key => $value):?>
-        <?= $key;?>
-        <?= $value;?>
-    <?endforeach?>
     <form method="post" name='tyr'>
         <p>
             <label for="1">Прізвище</label>
@@ -49,31 +44,19 @@
         <p>
             <label for="country">Країна</label>
             <select name="country" id="country">
-                <?foreach($arCountries as $key => $value):?>
-                    <?foreach($value as $country):?>
-                        <?if($country == $_REQUEST['country']):?>
-                            <option selected="selected" value="<?=$country['percent']?>">
-                                <?php print_r($value);?>
-                            </option>
-                        <?else:?>
-                            <option value="<?=$country?>">
-                                <?= $country['name'],' - ',$country['percent'],'%'?>
-                            </option>
-                        <?endif?>
-                    <?endforeach?>
-                <?endforeach?>
+                <?php foreach($arCountries as $key => $value):?>
+                    <?php if($key == $_REQUEST['country']):?>
+                        <option selected="selected" value="<?=$key?>">
+                            <?=$value['name'],' - ',$value['percent'],'%';?>
+                        </option>
+                    <?php else:?>
+                        <option value="<?=$key?>">
+                            <?= $value['name'],' - ',$value['percent'],'%'?>
+                        </option>
+                    <?php endif?>
+                <?php endforeach?>
             </select>
         </p>
-        <?php $arCountrie = array('name' => 'Турція', 'percent' => 10);?>
-        <?foreach($arCountrie as $key => $conddy):?>
-            <?foreach($conddy as $key1 => $conddyy):?>
-            <!--?if ($conddy['percent'] >= 15):?-->
-                <?= "Key", $ke1y['name']," <br>";?>
-                <?= $conddyy['name'];?>
-            <!--?endif?-->
-            <?endforeach?>
-        <?endforeach?>
-
         <p>
             <label for="sale">Знижка</label>
             <input type="checkbox" name="sale" id="sale">
@@ -84,7 +67,7 @@
         </p>
         <p>
             <label for="comment">Коментар</label>
-            <textarea placeholder="Коментар" name="comment" id="comment" rows="5"><?=isset($_REQUEST['comment']) ? $_REQUEST['comment'] : ''?></textarea>
+            <textarea placeholder="Коментар" name="comment" id="comment" rows="3"><?=isset($_REQUEST['comment']) ? $_REQUEST['comment'] : ''?></textarea>
         </p>
         <p>
             <input type="submit" name="submit" value="Підтвердити">
@@ -96,12 +79,16 @@
         //$arCountries = ['Турція' => 10, 'США' => 20, 'Єгипет' => 10, "В'єтнам" => 15, 'Малазія' => 25];
         if (isset($_REQUEST['submit'])) {
             $price = 300;
-            $percent = $arCountries[$_REQUEST['country']];
+            $percent = $arCountries[$_REQUEST['country']]['percent'];
             $res = ($price + ($price * $percent / 100) ) * $_REQUEST['days'];
+            if ($_REQUEST['sale']) {
+                $res *= 0.95;                
+            }
 
-            echo 'Шановний (а) ',$_REQUEST["second_name"],' ',$_REQUEST["first_name"],' ',$_REQUEST["surname"],', ви вибрали країну ',$_REQUEST['country'],'.<br>
+            echo 'Шановний (а) ',$_REQUEST['second_name'],' ',$_REQUEST["first_name"],' ',$_REQUEST["surname"],
+                ', ви вибрали країну ',$arCountries[$_REQUEST['country']]['name'],'.<br>
             Кількість днів: ',$_REQUEST["days"],'<br>
-            Вартість: ',$res;
+            Вартість: ',$res,'<br>';
         }
     ?>
 
